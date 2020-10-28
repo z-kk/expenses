@@ -1,7 +1,25 @@
-# This is just an example to get you started. A typical hybrid package
-# uses this file as the main entry point of the application.
-
 import expensespkg/submodule
 
+import
+  strutils, json
+
+const
+  LogFileName = "exp.json"
+
+proc main() =
+  stdout.write("月次ログ入力[Y/n]: ")
+  let isMonthLog = (stdin.readLine.toLowerAscii != "n")
+
+  stdout.write("出費ログ入力[y/N]: ")
+  let isExpLog = (stdin.readLine.toLowerAscii == "y")
+
+  var logData =
+    try:
+      parseFile(LogFileName)
+    except:
+      %*{"log": [], "exp": []}
+  logData.setLog(isMonthLog, isExpLog)
+  LogFileName.writeFile(logData.pretty(4))
+
 when isMainModule:
-  echo(getWelcomeMessage())
+  main()
