@@ -14,3 +14,4 @@ binDir        = "bin"
 # Dependencies
 
 requires "nim >= 1.2.4"
+requires "gnuplot"
