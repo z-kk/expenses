@@ -23,6 +23,7 @@ proc main() =
 
   let (x, y) = logData.readLog
 
+  graphCmd("set grid")
   plotYear(x, y, "log.png")
 
 when isMainModule:

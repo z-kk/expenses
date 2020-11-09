@@ -43,3 +43,6 @@ proc plotYear*(x: seq[DateTime], y: seq[int], fileName: string) =
     yy.add(y[i])
   if yr > 0:
     plt(xx.map(x => x.format("M-d")), yy, fileName, $yr)
+
+proc graphCmd*(command: string) =
+  cmd command
