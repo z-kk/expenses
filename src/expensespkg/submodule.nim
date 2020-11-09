@@ -88,3 +88,17 @@ proc readLog*(logData: JsonNode): (seq[DateTime], seq[int]) =
 
     result[0].add(log.date)
     result[1].add(expVal)
+
+  if result[0].len < 2:
+    return
+
+  for i in 1 .. result[0].len - 1:
+    let
+      preDate = result[0][^(i + 1)]
+      curDate = result[0][^i]
+    result[1][^i].dec(result[1][^(i + 1)])
+    for log in expSeq.filter(x => preDate < x.date and x.date < curDate and x.months == 0):
+      result[1][^i].inc(log.value)
+
+  result[0].delete(0)
+  result[1].delete(0)
