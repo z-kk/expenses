@@ -2,6 +2,9 @@ import
   gnuplot,
   sequtils, strformat, times, sugar
 
+export
+  Style
+
 proc plt[X, Y](x: seq[X], y: seq[Y], fileName: string, title: string = "") =
   cmd "set terminal png"
   cmd &"set output \"{fileName}\""
@@ -43,6 +46,9 @@ proc plotYear*(x: seq[DateTime], y: seq[int], fileName: string) =
     yy.add(y[i])
   if yr > 0:
     plt(xx.map(x => x.format("M-d")), yy, fileName, $yr)
+
+proc setStyle*(s: Style) =
+  gnuplot.setStyle(s)
 
 proc graphCmd*(command: string) =
   cmd command

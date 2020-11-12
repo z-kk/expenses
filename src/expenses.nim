@@ -23,6 +23,7 @@ proc main() =
 
   let (x, y) = logData.readLog
 
+  setStyle(Linespoints)
   graphCmd("set grid")
   plotYear(x, y, "log.png")
 
