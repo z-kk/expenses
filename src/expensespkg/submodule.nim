@@ -69,9 +69,12 @@ proc readLog*(logData: JsonNode): (seq[DateTime], seq[int]) =
     value.inc(try: node["adj"].getInt except: 0)
     logSeq.add((node["when"].getStr.parse(rdFormat), value))
 
-  var expSeq: seq[tuple[date: DateTime, months: int, value: int]]
+  var expSeq: seq[tuple[date: DateTime, title: string, months: int, value: int]]
   for node in logData["exp"]:
-    expSeq.add((node["when"].getStr.parse(rdFormat), node["month"].getInt, node["exp"].getInt))
+    if "title" in node:
+      expSeq.add((node["when"].getStr.parse(rdFormat), node["title"].getStr, node["month"].getInt, node["exp"].getInt))
+    else:
+      expSeq.add((node["when"].getStr.parse(rdFormat), "", node["month"].getInt, node["exp"].getInt))
 
   let
     lastLogData = logData["log"][logData["log"].len - 1]
@@ -85,6 +88,8 @@ proc readLog*(logData: JsonNode): (seq[DateTime], seq[int]) =
     var expVal = log.value
     for exp in expSeq.filter(x => log.date < x.date + x.months.months and x.date < log.date):
       expVal.inc(exp.value * (exp.months - between(exp.date, log.date).months) div exp.months)
+      if log.date + 1.months > now():
+        echo exp.title, ": ", exp.value div exp.months, " 残: ", exp.months - between(exp.date, log.date).months
 
     result[0].add(log.date)
     result[1].add(expVal)
