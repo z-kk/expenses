@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.1.0"
+version       = "0.1.1"
 author        = "z-kk"
 description   = "household expenses"
 license       = "MIT"
@@ -15,3 +15,13 @@ binDir        = "bin"
 
 requires "nim >= 1.2.4"
 requires "gnuplot"
+
+
+
+# Tasks
+
+import std / os
+task r, "build and run":
+  exec "nimble build"
+  withDir binDir:
+    exec "." / bin[0]
