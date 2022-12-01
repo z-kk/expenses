@@ -1,15 +1,14 @@
 import
-  strutils, sequtils, json, times, sugar
+  std / [strutils, sequtils, json, times, rdstdin, sugar]
 
 const
   rdFormat = "yyyy-M-d"
   wdFormat = "yyyy-MM-dd"
 
-proc stdinInt(value: var int, title: string) =
+proc readInt(title: string): int =
   while true:
-    stdout.write(title & ": ")
     try:
-      value = stdin.readLine.parseInt
+      result = readLineFromStdin(title & ": ").parseInt
       break
     except Exception as e:
       echo e.msg
@@ -17,36 +16,30 @@ proc stdinInt(value: var int, title: string) =
 
 proc setLog*(logData: var JsonNode, isMonthLog, isExpLog: bool) =
   if isMonthLog:
-    var
-      bank, cash, cardval, auPay: int
-
-    bank.stdinInt("銀行預金")
-    cash.stdinInt("財布現金")
-    cardval.stdinInt("カード料")
-    auPay.stdinInt("auPay残高")
-
-    let data = %*{
-      "when": %now().format(wdFormat),
-      "bank": %bank,
-      "cash": %cash,
-      "card": %*cardval,
-      "auPay": %auPay,
-    }
+    let
+      bank = "銀行預金".readInt
+      cash = "財布現金".readInt
+      cardval = "カード料".readInt
+      auPay = "auPay残高".readInt
+      data = %*{
+        "when": %now().format(wdFormat),
+        "bank": %bank,
+        "cash": %cash,
+        "card": %cardval,
+        "auPay": %auPay,
+      }
 
     logData["log"].add(data)
 
   if isExpLog:
-    var
-      exp, month: int
-
-    stdout.write("タイトル: ")
-    let title = stdin.readLine
-    exp.stdinInt("金額")
-    stdout.write("有効期間[月]: ")
-    try:
-      month = stdin.readLine.parseInt
-    except:
-      month = 0
+    let
+      title = "タイトル: ".readLineFromStdin
+      exp = "金額".readInt
+      month =
+        try:
+          "有効期間[月]: ".readLineFromStdin.parseInt
+        except:
+          0
 
     var data = %*{
       "when": %now().format(wdFormat),
@@ -86,7 +79,8 @@ proc readLog*(logData: JsonNode): (seq[DateTime], seq[int]) =
       continue
 
     var expVal = log.value
-    for exp in expSeq.filter(x => log.date < x.date + x.months.months and x.date < log.date):
+    let dt = log.date
+    for exp in expSeq.filter(x => dt < x.date + x.months.months and x.date < dt):
       expVal.inc(exp.value * (exp.months - between(exp.date, log.date).months) div exp.months)
       if log.date + 1.months > now():
         echo exp.title, ": ", exp.value div exp.months, " 残: ", exp.months - between(exp.date, log.date).months

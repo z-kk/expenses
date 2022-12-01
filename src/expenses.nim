@@ -1,17 +1,13 @@
-import expensespkg/[submodule, graph]
-
 import
-  strutils, json
+  std / [os, strutils, json, rdstdin],
+  expensespkg / [submodule, graph]
 
 const
   LogFileName = "exp.json"
 
 proc main() =
-  stdout.write("月次ログ入力[Y/n]: ")
-  let isMonthLog = (stdin.readLine.toLowerAscii != "n")
-
-  stdout.write("出費ログ入力[y/N]: ")
-  let isExpLog = (stdin.readLine.toLowerAscii == "y")
+    isMonthLog = ("月次ログ入力[Y/n]: ".readLineFromStdin.toLowerAscii != "n")
+    isExpLog = ("出費ログ入力[y/N]: ".readLineFromStdin.toLowerAscii == "y")
 
   var logData =
     try:
