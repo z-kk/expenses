@@ -1,0 +1,10 @@
+@charset "utf-8";
+/* CSS Document */
+
+input[type="number"] {
+    text-align: right;
+}
+
+input.price, input.month  {
+    width: 64pt;
+}

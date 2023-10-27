@@ -1,9 +1,40 @@
 import
-  std / [strutils, sequtils, json, times, rdstdin, sugar]
+  std / [os, strutils, sequtils, json, times, rdstdin, sugar],
+  graph
+
+when defined(release):
+  import
+    nimbleInfo
 
 const
+  LogFileName = "exp.json"
+  LogImgName* = "log.png"
   rdFormat = "yyyy-M-d"
   wdFormat = "yyyy-MM-dd"
+
+var
+  useLocalDir*: bool
+
+proc logFilePath(): string =
+  when defined(release):
+    if useLocalDir:
+      LogFileName
+    else:
+      getDataDir() / AppName / LogFileName
+  else:
+    LogFileName
+
+proc getLog*(): JsonNode =
+  result =
+    try:
+      logFilePath().parseFile
+    except:
+      %*{"log": [], "exp": []}
+
+proc saveLog*(data: JsonNode) =
+  let path = logFilePath()
+  path.parentDir.createDir
+  path.writeFile(data.pretty(4))
 
 proc readInt(title: string): int =
   while true:
@@ -101,3 +132,16 @@ proc readLog*(logData: JsonNode): (seq[DateTime], seq[int]) =
 
   result[0].delete(0)
   result[1].delete(0)
+
+proc logGraphPath*(): string =
+  when defined(release):
+    if useLocalDir:
+      LogImgName
+    else:
+      getDataDir() / AppName / LogImgName
+  else:
+    LogImgName
+
+proc plotGraph*(log: JsonNode) =
+  let (x, y) = log.readLog
+  plotYear(x, y, logGraphPath(), @["set grid"])

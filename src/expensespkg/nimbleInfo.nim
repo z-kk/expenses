@@ -1,0 +1,4 @@
+const
+  AppName* = ""
+  PlotApp* = ""
+  Version* = ""
