@@ -1,0 +1,10 @@
+version: '3'
+services:
+  nimsv:
+    build: .
+    ports:
+      - 5001:5000
+    volumes:
+      - ./data:/expenses/data
+    working_dir: /expenses/bin
+    command: ./expenses expenses --local
