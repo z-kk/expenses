@@ -92,6 +92,8 @@ proc readLog*(logData: JsonNode): (seq[DateTime], seq[int]) =
     value.dec(try: node["card"].getInt except: 0)
     value.inc(try: node["adj"].getInt except: 0)
     logSeq.add((node["when"].getStr.parse(rdFormat), value))
+  if logSeq.len < 2:
+    return
 
   var expSeq: seq[tuple[date: DateTime, title: string, months: int, value: int]]
   for node in logData["exp"]:
@@ -100,38 +102,23 @@ proc readLog*(logData: JsonNode): (seq[DateTime], seq[int]) =
     else:
       expSeq.add((node["when"].getStr.parse(rdFormat), "", node["month"].getInt, node["exp"].getInt))
 
-  let
-    lastLogData = logData["log"][logData["log"].len - 1]
-    lastDate = lastLogData["when"].getStr.parse(rdFormat)
-
-  for log in logSeq:
-    if log.date.year < lastDate.year - 4 and
-        not (log.date.year == lastDate.year - 5 and log.date.month.ord == 12):
+  for idx, log in logSeq:
+    if idx == 0 or log.date.year < logSeq[^1].date.year - 4:
       continue
 
-    var expVal = log.value
-    let dt = log.date
-    for exp in expSeq.filter(x => dt < x.date + x.months.months and x.date < dt):
-      expVal.inc(exp.value * (exp.months - between(exp.date, log.date).months) div exp.months)
-      if log.date + 1.months > now():
-        echo exp.title, ": ", exp.value div exp.months, " 残: ", exp.months - between(exp.date, log.date).months
-
     result[0].add(log.date)
-    result[1].add(expVal)
+    result[1].add(log.value - logSeq[idx - 1].value)
 
-  if result[0].len < 2:
-    return
-
-  for i in 1 .. result[0].len - 1:
-    let
-      preDate = result[0][^(i + 1)]
-      curDate = result[0][^i]
-    result[1][^i].dec(result[1][^(i + 1)])
-    for log in expSeq.filter(x => preDate < x.date and x.date < curDate and x.months == 0):
-      result[1][^i].inc(log.value)
-
-  result[0].delete(0)
-  result[1].delete(0)
+  for idx, dt in result[0]:
+    for exp in expSeq.filter(x => dt - months(x.months - 1) < x.date and x.date < dt):
+      if dt < exp.date + 1.months:
+        result[1][idx] += exp.value * (exp.months - 1) div exp.months
+      else:
+        result[1][idx] -= exp.value div exp.months
+      if idx == result[0].high:
+        echo exp.title, ": ", exp.value div exp.months, " 残: ", exp.months - between(exp.date, dt).months - 1
+    for exp in expSeq.filter(x => dt - 1.months < x.date and x.date < dt and x.months == 0):
+      result[1][idx] += exp.value
 
 proc logGraphPath*(): string =
   when defined(release):
