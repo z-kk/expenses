@@ -1,0 +1,57 @@
+#? stdtmpl | standard
+#proc indexPage(appName: string): string =
+#  result = ""
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <title>出納管理</title>
+        <link type="text/css" rel="stylesheet" href="${appName}/index.css"/>
+    </head>
+    <body>
+        <header>
+        </header>
+        <div class="body">
+            <main>
+                <h3>月次データ</h3>
+                <table class="log">
+                    <thead>
+                        <tr>
+                            <th>日付</th>
+                            <th>銀行預金</th>
+                            <th>財布現金</th>
+                            <th>プリペイド</th>
+                            <th>カード料</th>
+                            <th>調整</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <h3>出費データ</h3>
+                <table class="exp">
+                    <thead>
+                        <tr>
+                            <th>日付</th>
+                            <th>タイトル</th>
+                            <th>金額</th>
+                            <th>有効月数</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <img class="log" src="${appName}/img/graph">
+            </main>
+            <aside class="menu">
+            </aside>
+        </div>
+        <footer>
+        </footer>
+        <script>const appName = "${appName}";</script>
+        <script src="${appName}/functions.js"></script>
+        <script src="${appName}/index.js"></script>
+    </body>
+</html>
