@@ -3,8 +3,16 @@
 
 input[type="number"] {
     text-align: right;
+
+    @-moz-document url-prefix() {
+        direction: rtl;
+    }
 }
 
-input.price, input.month  {
+input.month  {
     width: 64pt;
+}
+
+td {
+    padding: .2rem .5rem;
 }
