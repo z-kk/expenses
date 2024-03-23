@@ -44,7 +44,7 @@ function setLogData(data) {
         ipt.type = "date";
         ipt.classList.add("when");
         ipt.value = log.when;
-        ipt.enable = false;
+        ipt.disabled = true;
         td.appendChild(ipt);
         tr.appendChild(td);
 
@@ -54,7 +54,7 @@ function setLogData(data) {
         ipt.classList.add("price");
         ipt.classList.add("bank");
         ipt.value = log.bank;
-        ipt.enable = false;
+        ipt.disabled = true;
         td.appendChild(ipt);
         tr.appendChild(td);
 
@@ -64,7 +64,7 @@ function setLogData(data) {
         ipt.classList.add("price");
         ipt.classList.add("cash");
         ipt.value = log.cash;
-        ipt.enable = false;
+        ipt.disabled = true;
         td.appendChild(ipt);
         tr.appendChild(td);
 
@@ -74,7 +74,7 @@ function setLogData(data) {
         ipt.classList.add("price");
         ipt.classList.add("prepaid");
         ipt.value = log.auPay;
-        ipt.enable = false;
+        ipt.disabled = true;
         td.appendChild(ipt);
         tr.appendChild(td);
 
@@ -84,7 +84,7 @@ function setLogData(data) {
         ipt.classList.add("price");
         ipt.classList.add("card");
         ipt.value = log.card;
-        ipt.enable = false;
+        ipt.disabled = true;
         td.appendChild(ipt);
         tr.appendChild(td);
 
@@ -94,7 +94,7 @@ function setLogData(data) {
         ipt.classList.add("price");
         ipt.classList.add("adj");
         ipt.value = log.adj;
-        ipt.enable = false;
+        ipt.disabled = true;
         td.appendChild(ipt);
         tr.appendChild(td);
 
@@ -103,6 +103,7 @@ function setLogData(data) {
 
     const tr = tbody.lastChild.cloneNode(true);
     for (const ipt of tr.querySelectorAll("input")) {
+        ipt.disabled = false;
         ipt.value = "";
     }
     tr.querySelector("input[type='date']").value = getDateString(new Date());
@@ -127,7 +128,7 @@ function setExpData(data) {
         ipt.type = "date";
         ipt.classList.add("when");
         ipt.value = exp.when;
-        ipt.enable = false;
+        ipt.disabled = true;
         td.appendChild(ipt);
         tr.appendChild(td);
 
@@ -135,7 +136,7 @@ function setExpData(data) {
         ipt = document.createElement("input");
         ipt.classList.add("title");
         ipt.value = exp.title;
-        ipt.enable = false;
+        ipt.disabled = true;
         td.appendChild(ipt);
         tr.appendChild(td);
 
@@ -145,7 +146,7 @@ function setExpData(data) {
         ipt.classList.add("price");
         ipt.classList.add("exp");
         ipt.value = exp.exp;
-        ipt.enable = false;
+        ipt.disabled = true;
         td.appendChild(ipt);
         tr.appendChild(td);
 
@@ -154,7 +155,7 @@ function setExpData(data) {
         ipt.type = "number";
         ipt.classList.add("month");
         ipt.value = exp.month;
-        ipt.enable = false;
+        ipt.disabled = true;
         td.appendChild(ipt);
         tr.appendChild(td);
 
@@ -163,6 +164,7 @@ function setExpData(data) {
 
     const tr = tbody.lastChild.cloneNode(true);
     for (const ipt of tr.querySelectorAll("input")) {
+        ipt.disabled = false;
         ipt.value = "";
     }
     tr.querySelector("input[type='date']").value = getDateString(new Date());
