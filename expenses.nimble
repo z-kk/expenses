@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.2.0"
+version       = "0.2.1"
 author        = "z-kk"
 description   = "household expenses"
 license       = "MIT"
@@ -27,7 +27,12 @@ task r, "build and run":
   exec "nimble build"
   withDir binDir:
     let staticDir = "public"
-    exec "if [ ! -s $1 ]; then ln -s $2 $1; fi" % [staticDir, ".." / "src" / "html"]
+    if not staticDir.dirExists:
+      exec "ln -s $1 $2" % [".." / srcDir / "html", staticDir]
+  exec "nimble ex"
+
+task ex, "run without build":
+  withDir binDir:
     exec "." / bin[0]
 
 
