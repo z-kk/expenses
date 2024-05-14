@@ -1,4 +1,3 @@
 const
   AppName* = ""
-  PlotApp* = ""
   Version* = ""

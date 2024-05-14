@@ -8,6 +8,7 @@ type
     port: int
     appName: string
     isCli: bool
+    isPlot: bool
 
 const
   DefaultPort = 5000
@@ -19,6 +20,7 @@ proc readCmdOpt(): CmdOpt =
 
     Usage:
       $1 [<appName>] [-p <port>] [--local]
+      $1 --plot [--local]
       $1 --cli
 
     Options:
@@ -26,6 +28,7 @@ proc readCmdOpt(): CmdOpt =
       --version         Show version.
       --cli             Execute cli.
       --local           Use ./public dir.
+      --plot            Plot graph.
       -p --port <port>  Http server port [default: $2]
       <appName>         jester appName
   """ % [AppName, $DefaultPort]
@@ -35,6 +38,7 @@ proc readCmdOpt(): CmdOpt =
   if args["<appName>"]:
     result.appName = "/" & $args["<appName>"]
   result.isCli = args["--cli"].to_bool
+  result.isPlot = args["--plot"].to_bool
   useLocalDir = args["--local"].to_bool
 
 proc cli() =
@@ -52,6 +56,8 @@ when isMainModule:
   let cmdOpt = readCmdOpt()
   if cmdOpt.isCli:
     cli()
+  elif cmdOpt.isPlot:
+    getLog().plotGraph
   else:
     getLog().plotGraph
     startWebServer(cmdOpt.port, cmdOpt.appName)

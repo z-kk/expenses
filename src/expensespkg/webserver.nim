@@ -85,11 +85,11 @@ router rt:
   get "/":
     when defined(release):
       if useLocalDir:
-        discard execProcess("." / PlotApp & " --local")
+        discard execProcess("." / AppName & " --plot --local")
       else:
-        discard execProcess(getHomeDir() / ".nimble/bin" / PlotApp)
+        discard execProcess(getHomeDir() / ".nimble/bin" / AppName & " --plot")
     else:
-      echo execProcess("." / PlotApp & " --local")
+      echo execProcess("." / AppName & " --plot --local")
     resp indexPage(request.appName)
   get "/logdata":
     resp getLogData()

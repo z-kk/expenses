@@ -6,7 +6,7 @@ description   = "household expenses"
 license       = "MIT"
 srcDir        = "src"
 installExt    = @["nim"]
-bin           = @["expenses", "plotExpLog"]
+bin           = @["expenses"]
 binDir        = "bin"
 
 
@@ -44,16 +44,14 @@ before build:
   infoFile.writeFile("""
     const
       AppName* = "$#"
-      PlotApp* = "$#"
       Version* = "$#"
-  """.dedent % [bin[0], bin[1], version])
+  """.dedent % [bin[0], version])
 
 after build:
   let infoFile = srcDir / bin[0] & "pkg" / "nimbleInfo.nim"
   infoFile.writeFile("""
     const
       AppName* = ""
-      PlotApp* = ""
       Version* = ""
   """.dedent)
 
