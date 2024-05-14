@@ -1,30 +1,36 @@
 import
-  std / [sequtils, times, sugar],
-  gnuplot
+  std / [strformat, times],
+  ggplotnim
 
-proc plotYear*(x: seq[DateTime], y: seq[int], fileName = "", commands: seq[string] = @[]) =
-  cmd "set timefmt \"%m-%d\""
-  cmd "set xdata time"
-  cmd "set xtics format \"%m\""
+const
+  DateFormat = "yyyy-MM-dd"
 
+proc plotYear*(fileName: string, x: seq[DateTime], y: seq[int]) =
   var
-    yr: int
-    xx: seq[DateTime]
-    yy: seq[int]
+    year: seq[int]
+    xx: seq[float]
+    breaks: seq[float]
 
   for i, d in x:
-    if d.year != yr:
-      if yr > 0:
-        plot(xx.map(x => x.format("M-d")), yy, $yr)
-      yr = d.year
-      xx = @[]
-      yy = @[]
-    xx.add(d)
-    yy.add(y[i])
-  if yr > 0:
-    plot(xx.map(x => x.format("M-d")), yy, $yr)
+    let
+      yr = (d + initDuration(days=10)).year
+      dur = d - parse($yr & "-01-01", DateFormat)
+    year.add yr
+    xx.add ("2001-01-01".parse(DateFormat) + dur).toTime.toUnixFloat
 
-  withGnuplot:
-    for command in commands:
-      cmd(command)
-    fileName.png
+  for i in 1 .. 12:
+    breaks.add "2001-{i:02}-01".fmt.parse(DateFormat).toTime.toUnixFloat
+
+  let
+    df = toDf({"month": xx, "exp": y, "year": year})
+  proc monthFormat(x: float): string =
+    x.fromUnixFloat.format("MMM")
+  proc valueFormat(x: float): string =
+    $int(x / 10000)
+
+  df.ggplot(aes(x=factor("month"), y=factor("exp"), color=factor("year"))) +
+    geom_line() + geom_point(aes(shape=factor("year"))) +
+    #scale_x_date(breaks=breaks, isTimestamp=true, formatString="MMM", timeZone=local()) +
+    scale_x_continuous(breaks=breaks, labels=monthFormat) +
+    scale_y_continuous(labels=valueFormat) +
+    fileName.ggsave

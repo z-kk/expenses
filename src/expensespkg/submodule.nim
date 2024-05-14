@@ -131,4 +131,4 @@ proc logGraphPath*(): string =
 
 proc plotGraph*(log: JsonNode) =
   let (x, y) = log.readLog
-  plotYear(x, y, logGraphPath(), @["set grid"])
+  logGraphPath().plotYear(x, y)

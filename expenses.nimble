@@ -16,7 +16,7 @@ binDir        = "bin"
 requires "nim >= 2.0.0"
 requires "jester"
 requires "docopt"
-requires "gnuplot >= 2.7.1"
+requires "ggplotnim"
 
 
 
