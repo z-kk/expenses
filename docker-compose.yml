@@ -1,10 +1,13 @@
 version: '3'
 services:
   nimsv:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: prod
     ports:
       - 5001:5000
     volumes:
       - ./data:/expenses/data
-    working_dir: /expenses/bin
+    working_dir: /expenses
     command: ./expenses expenses --local
